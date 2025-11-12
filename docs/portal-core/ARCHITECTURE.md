@@ -1,130 +1,112 @@
-# Portal Administrativo - Arquitetura Core
+# Core Architecture
 
-## 1. Visão Geral
+## Visão Geral
 
-### 1.1. Conceito
-O Portal Administrativo funcionará como um sistema modular ("rack") que permite a instalação e ativação de diferentes micro sistemas de forma independente. Esta arquitetura possibilita:
-- Desenvolvimento independente dos módulos
-- Migração gradual dos sistemas existentes
-- Flexibilidade na ativação/desativação de funcionalidades
-- Manutenção simplificada
+O Portal Administrativo está sendo desenvolvido usando uma arquitetura modular inspirada no conceito de "racks", onde cada módulo é independente mas pode se integrar facilmente ao core do sistema.
 
-### 1.2. Objetivos
-- Criar uma plataforma base extensível
-- Permitir desenvolvimento modular
-- Facilitar a migração gradual
-- Manter consistência na experiência do usuário
-- Centralizar a gestão de acessos
+## Estrutura Base
 
-## 2. Arquitetura Base ("Rack")
+### Core do Portal
 
-### 2.1. Componentes Core
-- **Sistema de Autenticação**
-  - Login centralizado
-  - Gestão de sessões
-  - Single Sign-On
+*   Sistema base que gerencia a integração entre módulos
+*   Gerenciamento de autenticação e autorização
+*   Gerenciamento de estado global
+*   Roteamento e navegação
+*   Temas e estilos globais
 
-- **Gerenciamento de Permissões**
-  - Controle granular por módulo
-  - Atribuição individual de acessos
-  - Hierarquia de permissões
+### Módulos (Racks)
 
-- **Interface Base**
-  - Menu dinâmico
-  - Header/Footer padrão
-  - Área de conteúdo para módulos
-  - Componentes compartilhados
+Cada módulo é desenvolvido como uma unidade independente que:
 
-- **Sistema de Módulos**
-  - Registro de módulos
-  - Ativação/desativação
-  - Versionamento
-  - Dependências
+*   Possui suas próprias rotas
+*   Gerencia seu próprio estado
+*   Tem seus próprios componentes
+*   Pode se comunicar com outros módulos através de interfaces definidas
 
-### 2.2. Gestão de Módulos
-- **Instalação**
-  - Processo de registro
-  - Verificação de compatibilidade
-  - Gestão de dependências
+## Tecnologias
 
-- **Ativação**
-  - Controle administrativo
-  - Configuração por unidade/setor
-  - Rollback em caso de problemas
+### Frontend
 
-## 3. Arquitetura de Módulos
+*   React com TypeScript
+*   Gerenciamento de Estado: \[A definir]
+*   UI Framework: \[A definir]
 
-### 3.1. Estrutura Padrão de Módulo
-- **Frontend**
-  - Componentes isolados
-  - Rotas próprias
-  - Assets independentes
+### Backend
 
-- **Backend**
-  - API própria
-  - Banco de dados isolado
-  - Serviços independentes
+*   Node.js com TypeScript
+*   Clean Architecture
+*   REST APIs
 
-### 3.2. Integração com Core
-- **Interface**
-  - Injeção no menu principal
-  - Área de conteúdo reservada
-  - Componentes compartilhados
+## Comunicação entre Módulos
 
-- **Autenticação/Autorização**
-  - Uso do sistema central
-  - Permissões específicas
-  - Tokens de acesso
+### Events
 
-## 4. Considerações de Desenvolvimento
+*   Sistema de eventos para comunicação assíncrona
+*   Pub/Sub para atualizações em tempo real
 
-### 4.1. Padronização
-- Definir padrões de desenvolvimento
-- Criar templates de módulos
-- Documentar interfaces de integração
+### APIs
 
-### 4.2. Ciclo de Vida dos Módulos
-1. Desenvolvimento
-2. Empacotamento
-3. Instalação
-4. Ativação
-5. Manutenção
-6. Desativação (se necessário)
+*   Interfaces bem definidas para comunicação entre módulos
+*   Versionamento de APIs
+*   Documentação via OpenAPI/Swagger
 
-## 5. Segurança
+## Desenvolvimento de Módulos
 
-### 5.1. Isolamento
-- Módulos isolados entre si
-- Dados separados
-- Permissões granulares
+### Guidelines
 
-### 5.2. Autenticação/Autorização
-- Sistema central de autenticação
-- Gestão de permissões por módulo
-- Auditoria de acessos
+1.  Independência: Módulos devem funcionar de forma autônoma
+2.  Baixo Acoplamento: Minimizar dependências entre módulos
+3.  Alta Coesão: Funcionalidades relacionadas juntas
+4.  Interfaces Claras: APIs bem documentadas
 
-## 6. Próximos Passos
+### Estrutura de Diretórios
 
-### 6.1. Definições Técnicas
-- [ ] Escolha do stack tecnológico
-- [ ] Definição da arquitetura detalhada
-- [ ] Padrões de desenvolvimento
-- [ ] Interfaces de integração
+```
+/src
+  /core
+    /auth
+    /routing
+    /state
+    /ui
+  /modules
+    /[module-name]
+      /components
+      /services
+      /types
+      /utils
+```
 
-### 6.2. Prova de Conceito
-- [ ] Desenvolvimento do core mínimo
-- [ ] Criação de módulo exemplo
-- [ ] Testes de integração
-- [ ] Validação de conceito
+## Segurança
 
-### 6.3. Documentação
-- [ ] Guias de desenvolvimento
-- [ ] Padrões de módulos
-- [ ] Processos de instalação
-- [ ] Documentação de APIs
+### Autenticação
 
----
-## Histórico de Revisões
-| Data | Versão | Descrição | Autor |
-|------|---------|-----------|--------|
-| 2025-11-05 | 1.0 | Versão inicial | - |
+*   Sistema centralizado de autenticação
+*   Suporte a múltiplos métodos de auth
+*   Gestão de sessões
+
+### Autorização
+
+*   RBAC (Role-Based Access Control)
+*   Permissões granulares por módulo
+*   Auditoria de acessos
+
+## Performance
+
+### Otimizações
+
+*   Code Splitting por módulo
+*   Lazy Loading de componentes
+*   Caching estratégico
+
+### Monitoramento
+
+*   Métricas de performance por módulo
+*   Rastreamento de erros
+*   Analytics de uso
+
+## Próximos Passos
+
+1.  Definir biblioteca de UI
+2.  Estabelecer padrões de código
+3.  Criar módulo exemplo
+4.  Documentar processo de criação de módulos
