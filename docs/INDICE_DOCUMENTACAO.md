@@ -49,6 +49,16 @@ Para arquitetos e tech leads:
    - Features por módulo
    - Roadmap por empresa
 
+5. **[DEVOPS.md](./technical/DEVOPS.md)** (10 min)
+   - Infraestrutura e CI/CD
+   - Docker e containerização
+   - Ambientes e deployment
+   
+6. **[MIGRACAO_MONOREPO_POLIREPO.md](./technical/MIGRACAO_MONOREPO_POLIREPO.md)** (5 min)
+   - Estratégia de migração para polirepo
+   - Scripts automatizados
+   - Decisão: quando migrar
+
 5. **[GLOSSARIO.md](./management/GLOSSARIO.md)** (15 min)
    - 110+ termos técnicos
    - Referência durante desenvolvimento
