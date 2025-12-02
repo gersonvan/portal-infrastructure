@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  # SQL Server Database
+  database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: portal-database
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=PortalAdmin@2025
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    networks:
+      - portal-network
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P PortalAdmin@2025 -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  # Backend API (NestJS)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: portal-backend
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - DATABASE_HOST=database
+      - DATABASE_PORT=1433
+      - DATABASE_USERNAME=sa
+      - DATABASE_PASSWORD=PortalAdmin@2025
+      - DATABASE_NAME=PortalAdministrativo
+      - JWT_SECRET=your-jwt-secret-change-in-production
+      - AZURE_AD_TENANT_ID=${AZURE_AD_TENANT_ID}
+      - AZURE_AD_CLIENT_ID=${AZURE_AD_CLIENT_ID}
+      - AZURE_AD_CLIENT_SECRET=${AZURE_AD_CLIENT_SECRET}
+    ports:
+      - "3001:3001"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - portal-network
+    volumes:
+      - ./backend/src:/app/src
+      - /app/node_modules
+    command: npm run start:dev
+
+  # Frontend (Next.js)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: deps  # Use deps stage for development
+    container_name: portal-frontend
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
+      - NEXT_PUBLIC_APP_ENV=development
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - portal-network
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+
+  # Azure Blob Storage Emulator (Azurite)
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    container_name: portal-azurite
+    ports:
+      - "10000:10000"  # Blob service
+      - "10001:10001"  # Queue service
+      - "10002:10002"  # Table service
+    volumes:
+      - azurite-data:/data
+    networks:
+      - portal-network
+    command: azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0
+
+networks:
+  portal-network:
+    driver: bridge
+
+volumes:
+  mssql-data:
+  azurite-data:

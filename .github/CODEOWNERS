@@ -1,0 +1,23 @@
+# Global owners
+* @gersonvan
+
+# Frontend code
+/frontend/src/ @gersonvan
+/frontend/Dockerfile @gersonvan
+
+# Backend code
+/backend/src/ @gersonvan
+/backend/Dockerfile @gersonvan
+
+# Documentation
+/docs/ @gersonvan
+/README.md @gersonvan
+
+# CI/CD and Infrastructure
+/.github/ @gersonvan
+/docker-compose*.yml @gersonvan
+*.Dockerfile @gersonvan
+
+# Configuration files
+*.config.* @gersonvan
+*.json @gersonvan

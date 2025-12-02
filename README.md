@@ -2,27 +2,23 @@
 
 ## Visão Geral
 
-Este repositório contém a documentação técnica e de planejamento para o projeto do novo Portal Administrativo unificado para as empresas AVP e Unigrande. O objetivo é criar uma plataforma moderna, escalável e multi-tenant, que servirá como uma base ("rack") para diversos módulos de negócios, como o "Diploma Digital", entre outros.
+Este repositório contém o código-fonte e a documentação técnica para o projeto do novo Portal Administrativo unificado para as empresas AVP e Unigrande. O objetivo é criar uma plataforma moderna, escalável e multi-tenant, que servirá como uma base ("rack") para diversos módulos de negócios.
 
-A documentação aqui presente é um espelho da fonte de verdade mantida no Github, servindo como um recurso essencial para a equipe de desenvolvimento.
+## Estrutura do Repositório
+
+- **/frontend**: Aplicação Next.js (React).
+  - Para iniciar: Vá para a pasta `/frontend` e execute `npm install`.
+- **/backend**: Aplicação NestJS (Node.js).
+  - Para iniciar: Vá para a pasta `/backend` e execute `npm install`.
+- **/docs**: Documentação do projeto.
 
 ## Estrutura da Documentação
 
 Toda a documentação do projeto está centralizada na pasta `/docs`. A estrutura foi reorganizada por domínios para facilitar a escalabilidade:
 
 - **/docs/management**: Documentação de Gestão e Produto.
-  - [Roadmap Executivo](docs/management/ROADMAP_EXECUTIVO.md): Visão macro do projeto, fases e entregas.
-  - [Backlog](docs/management/BACKLOG.md): Backlog de funcionalidades e requisitos.
-  - [Requisitos Gerais](docs/management/REQUIREMENTS.md): Requisitos de alto nível.
-  - [Plano de Migração](docs/management/MIGRATION_PLAN.md): Estratégia de migração do legado.
 - **/docs/technical**: Documentação Técnica e Arquitetural.
-  - [Arquitetura Core](docs/technical/architecture/CORE_ARCHITECTURE.md): Detalhes da arquitetura multi-tenant, tecnologias e padrões.
-  - [Arquitetura Multi-Tenant](docs/technical/architecture/MULTI_TENANT.md): Detalhes específicos da implementação multi-tenant.
-  - [Diagramas](docs/technical/architecture/DIAGRAMAS.md): Fluxos e desenhos técnicos.
-  - [Padrões de Desenvolvimento](docs/technical/standards/DEVELOPMENT_STANDARDS.md): Padrões de código, commits e branchs.
 - **/docs/business-modules**: Documentação específica por Módulo de Negócio.
-  - **/academico/diploma-digital**:
-    - [Gerenciamento de Projeto](docs/business-modules/academico/diploma-digital/PROJECT_MANAGEMENT.md): Documentação do módulo Diploma Digital.
 - **/docs/legacy**: Arquivos de trabalho e versões antigas da documentação.
 
 ## Arquitetura e Tecnologias
@@ -39,9 +35,72 @@ Para mais detalhes, consulte o documento de [Arquitetura Core](docs/technical/ar
 
 ## Como Começar
 
-1.  **Explore a Documentação**: Comece pelo [Roadmap Executivo](docs/management/ROADMAP_EXECUTIVO.md) para uma visão geral e depois mergulhe nos documentos de [Arquitetura Core](docs/technical/architecture/CORE_ARCHITECTURE.md).
-2.  **Ambiente de Desenvolvimento**: Siga as instruções em [Padrões de Desenvolvimento](docs/technical/standards/DEVELOPMENT_STANDARDS.md) para configurar seu ambiente e entender nosso fluxo de trabalho com Git.
-3.  **Backlog**: Consulte o [Backlog](docs/management/BACKLOG.md) para entender as próximas tarefas.
+### Configuração Inicial
+
+#### Backend (NestJS)
+```bash
+cd backend
+npm install
+
+# Configure as variáveis de ambiente
+cp .env.example .env
+# Edite o arquivo .env com suas credenciais do SQL Server
+
+# Inicie o servidor de desenvolvimento
+npm run start:dev
+```
+
+O backend estará disponível em `http://localhost:3001`  
+Documentação da API (Swagger): `http://localhost:3001/api/docs`
+
+#### Frontend (Next.js)
+```bash
+cd frontend
+npm install
+
+# Inicie o servidor de desenvolvimento
+npm run dev
+```
+
+A aplicação estará disponível em `http://localhost:3001`
+
+#### Storybook (Desenvolvimento de Componentes)
+```bash
+cd frontend
+npm run storybook
+```
+
+O Storybook estará disponível em `http://localhost:6006`
+
+### Status da Implementação
+
+✅ **Fase 1:** Estrutura Inicial e Padrões (Concluída)  
+✅ **Fase 2:** Backend Core - API, Banco de Dados, Multi-tenancy (Concluída)  
+✅ **Fase 3:** Frontend Core - Storybook, Componentes, Temas (Concluída)  
+⏸️ **Fase 4:** Autenticação Azure AD (Aguardando Infraestrutura)
+
+Para detalhes completos da implementação, consulte:
+- [Documentação de Implementação - Fases 1 a 3](docs/technical/IMPLEMENTACAO_FASE_1_A_3.md)
+
+### Funcionalidades Implementadas
+
+**Backend:**
+- ✅ API REST com NestJS 10
+- ✅ Documentação automática com Swagger
+- ✅ Conexão TypeORM + SQL Server
+- ✅ Middleware Multi-tenant (validação via header `x-tenant-id`)
+- ✅ Suporte para empresas: AVP e Unigrande
+
+**Frontend:**
+- ✅ Next.js 14 com App Router
+- ✅ Sistema de temas dinâmico (AVP e Unigrande)
+- ✅ Biblioteca de componentes com Storybook
+- ✅ Atomic Design (Button, CompanySelector, etc.)
+- ✅ Tailwind CSS + CSS Variables
+- ✅ Persistência de tema em localStorage
+
+1.  **Explore a Documentação**: Comece pelo [Roadmap Executivo](docs/management/ROADMAP_EXECUTIVO.md) para uma visão geral.
+2.  **Ambiente de Desenvolvimento**: Siga as instruções em [Padrões de Desenvolvimento](docs/technical/standards/DEVELOPMENT_STANDARDS.md) para configurar seu ambiente.
 
 ## Contato
 

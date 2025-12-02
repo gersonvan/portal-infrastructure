@@ -27,9 +27,9 @@ Cada módulo é desenvolvido como uma unidade independente que:
 
 ### Frontend
 
-*   React 18 + Next.js 14.x (TypeScript)
+*   React 19 + Next.js 15.x (TypeScript)
 *   Gerenciamento de Estado: Context API / Hooks
-*   UI Framework: Custom (CSS Modules / Tailwind) - *A definir*
+*   UI Framework: Tailwind CSS
 
 ### Backend
 
