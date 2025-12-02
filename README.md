@@ -1,111 +1,169 @@
-# Portal Administrativo - AVP/Unigrande
+# Portal Administrativo - Infrastructure
 
-## Visão Geral
+[![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/features/actions)
+[![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)](https://nginx.org/)
 
-Este repositório contém o código-fonte e a documentação técnica para o projeto do novo Portal Administrativo unificado para as empresas AVP e Unigrande. O objetivo é criar uma plataforma moderna, escalável e multi-tenant, que servirá como uma base ("rack") para diversos módulos de negócios.
+## 📋 Sobre
 
-## Estrutura do Repositório
+Repositório contendo toda a infraestrutura como código (IaC) do Portal Administrativo:
+- Configurações Docker e Docker Compose
+- Pipelines CI/CD (GitHub Actions)
+- Configurações Nginx
+- Scripts de deployment e automação
 
-- **/frontend**: Aplicação Next.js (React).
-  - Para iniciar: Vá para a pasta `/frontend` e execute `npm install`.
-- **/backend**: Aplicação NestJS (Node.js).
-  - Para iniciar: Vá para a pasta `/backend` e execute `npm install`.
-- **/docs**: Documentação do projeto.
+## 🏗️ Estrutura do Projeto
 
-## Estrutura da Documentação
+```
+.
+├── .github/
+│   └── workflows/          # GitHub Actions workflows
+│       ├── frontend-ci.yml
+│       ├── backend-ci.yml
+│       └── pr-checks.yml
+├── docker-compose/
+│   ├── dev/               # Ambiente de desenvolvimento
+│   │   └── docker-compose.yml
+│   └── production/        # Ambiente de produção
+│       └── docker-compose.yml
+├── nginx/
+│   ├── nginx.conf         # Configuração do proxy reverso
+│   └── ssl/              # Certificados SSL/TLS
+└── scripts/              # Scripts de automação
+```
 
-Toda a documentação do projeto está centralizada na pasta `/docs`. A estrutura foi reorganizada por domínios para facilitar a escalabilidade:
+## 📦 Repositórios Relacionados
 
-- **/docs/management**: Documentação de Gestão e Produto.
-- **/docs/technical**: Documentação Técnica e Arquitetural.
-- **/docs/business-modules**: Documentação específica por Módulo de Negócio.
-- **/docs/legacy**: Arquivos de trabalho e versões antigas da documentação.
+Este é o repositório de infraestrutura da arquitetura polirepo:
 
-## Arquitetura e Tecnologias
+- **[portal-frontend](https://github.com/gersonvan/portal-frontend)** - Aplicação Next.js 15
+- **[portal-backend](https://github.com/gersonvan/portal-backend)** - API NestJS 10
+- **[portal-infrastructure](https://github.com/gersonvan/portal-infrastructure)** - Infraestrutura (este repositório)
+- **[portal-docs](https://github.com/gersonvan/portal-docs)** - Documentação completa
 
-A solução está sendo desenvolvida com uma arquitetura de micro-serviços e front-end desacoplado, utilizando as seguintes tecnologias:
+## 🚀 Quick Start
 
-- **Frontend**: React 18 + Next.js 14.x (TypeScript)
-- **Backend**: Node.js + NestJS 10.x (TypeScript)
-- **Banco de Dados**: SQL Server (Infra Local / On-Premise)
-- **Autenticação**: Azure AD
-- **Armazenamento**: Azure Blob Storage
+### Pré-requisitos
 
-Para mais detalhes, consulte o documento de [Arquitetura Core](docs/technical/architecture/CORE_ARCHITECTURE.md).
+- Docker 20.10+
+- Docker Compose 2.0+
 
-## Como Começar
+### Desenvolvimento
 
-### Configuração Inicial
+```powershell
+# Clone o repositório
+git clone https://github.com/gersonvan/portal-infrastructure.git
+cd portal-infrastructure
 
-#### Backend (NestJS)
-```bash
-cd backend
-npm install
+# Clone os repositórios de código (se necessário)
+git clone https://github.com/gersonvan/portal-frontend.git ../portal-frontend
+git clone https://github.com/gersonvan/portal-backend.git ../portal-backend
 
+# Inicie os serviços
+docker-compose -f docker-compose/dev/docker-compose.yml up -d
+```
+
+### Produção
+
+```powershell
 # Configure as variáveis de ambiente
 cp .env.example .env
-# Edite o arquivo .env com suas credenciais do SQL Server
+# Edite .env com suas configurações
 
-# Inicie o servidor de desenvolvimento
-npm run start:dev
+# Deploy
+docker-compose -f docker-compose/production/docker-compose.yml up -d
 ```
 
-O backend estará disponível em `http://localhost:3001`  
-Documentação da API (Swagger): `http://localhost:3001/api/docs`
+## 🔄 CI/CD
 
-#### Frontend (Next.js)
-```bash
-cd frontend
-npm install
+### Workflows Disponíveis
 
-# Inicie o servidor de desenvolvimento
-npm run dev
+#### Frontend CI (`frontend-ci.yml`)
+- **Trigger**: Push em `portal-frontend`
+- **Etapas**: Lint → Test → Build → Docker Build
+- **Deploy**: Automático para staging (branch main)
+
+#### Backend CI (`backend-ci.yml`)
+- **Trigger**: Push em `portal-backend`
+- **Etapas**: Lint → Test → Build → Docker Build
+- **Deploy**: Automático para staging (branch main)
+
+#### PR Checks (`pr-checks.yml`)
+- **Trigger**: Pull Requests
+- **Validações**: Code style, testes, build
+
+### Configuração de Secrets
+
+Configure no GitHub (Settings → Secrets and variables → Actions):
+
+```
+DOCKER_USERNAME         # Docker Hub username
+DOCKER_PASSWORD         # Docker Hub token
+AZURE_TENANT_ID        # Azure AD tenant
+AZURE_CLIENT_ID        # Azure AD client
+AZURE_CLIENT_SECRET    # Azure AD secret
+SQL_SERVER_PASSWORD    # Senha do SQL Server
 ```
 
-A aplicação estará disponível em `http://localhost:3001`
+## 🐳 Docker
 
-#### Storybook (Desenvolvimento de Componentes)
-```bash
-cd frontend
-npm run storybook
+### Imagens
+
+- **Frontend**: `gersonvan/portal-frontend:latest`
+- **Backend**: `gersonvan/portal-backend:latest`
+- **Database**: `mcr.microsoft.com/mssql/server:2022-latest`
+- **Proxy**: `nginx:alpine`
+
+### Volumes
+
+```yaml
+sql-data:          # Dados do SQL Server
+nginx-ssl:         # Certificados SSL
 ```
 
-O Storybook estará disponível em `http://localhost:6006`
+### Networks
 
-### Status da Implementação
+```yaml
+portal-network:    # Rede interna
+```
 
-✅ **Fase 1:** Estrutura Inicial e Padrões (Concluída)  
-✅ **Fase 2:** Backend Core - API, Banco de Dados, Multi-tenancy (Concluída)  
-✅ **Fase 3:** Frontend Core - Storybook, Componentes, Temas (Concluída)  
-⏸️ **Fase 4:** Autenticação Azure AD (Aguardando Infraestrutura)
+## 🔧 Configuração Nginx
 
-Para detalhes completos da implementação, consulte:
-- [Documentação de Implementação - Fases 1 a 3](docs/technical/IMPLEMENTACAO_FASE_1_A_3.md)
+O Nginx atua como reverse proxy:
 
-### Funcionalidades Implementadas
+```
+https://portal.example.com     → Frontend (Next.js)
+https://portal.example.com/api → Backend (NestJS)
+```
 
-**Backend:**
-- ✅ API REST com NestJS 10
-- ✅ Documentação automática com Swagger
-- ✅ Conexão TypeORM + SQL Server
-- ✅ Middleware Multi-tenant (validação via header `x-tenant-id`)
-- ✅ Suporte para empresas: AVP e Unigrande
+### SSL/TLS
 
-**Frontend:**
-- ✅ Next.js 14 com App Router
-- ✅ Sistema de temas dinâmico (AVP e Unigrande)
-- ✅ Biblioteca de componentes com Storybook
-- ✅ Atomic Design (Button, CompanySelector, etc.)
-- ✅ Tailwind CSS + CSS Variables
-- ✅ Persistência de tema em localStorage
+Coloque os certificados em `nginx/ssl/`:
+- `cert.pem` - Certificado
+- `key.pem` - Chave privada
 
-1.  **Explore a Documentação**: Comece pelo [Roadmap Executivo](docs/management/ROADMAP_EXECUTIVO.md) para uma visão geral.
-2.  **Ambiente de Desenvolvimento**: Siga as instruções em [Padrões de Desenvolvimento](docs/technical/standards/DEVELOPMENT_STANDARDS.md) para configurar seu ambiente.
+## 📚 Documentação Completa
 
-## Contato
+Para documentação técnica detalhada, consulte o [repositório de documentação](https://github.com/gersonvan/portal-docs):
 
-- **Product Owner**: Gerson
-- **Tech Lead**: Rayan
-- **UX**: Bianca
-- **Front-End**: Pedro Henrique
-- **Back-End**: Guilherme / Pedro Soeiro
+- [Arquitetura](https://github.com/gersonvan/portal-docs/tree/main/technical/architecture)
+- [Multi-tenant](https://github.com/gersonvan/portal-docs/blob/main/technical/architecture/MULTI_TENANT.md)
+- [DevOps](https://github.com/gersonvan/portal-docs/blob/main/technical/DEVOPS.md)
+- [Padrões de Desenvolvimento](https://github.com/gersonvan/portal-docs/blob/main/technical/standards/DEVELOPMENT_STANDARDS.md)
+
+## 🤝 Contribuindo
+
+1. Faça fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto é proprietário e confidencial.
+
+## 🆘 Suporte
+
+- **Documentação**: [portal-docs](https://github.com/gersonvan/portal-docs)
+- **Issues**: [GitHub Issues](https://github.com/gersonvan/portal-infrastructure/issues)
